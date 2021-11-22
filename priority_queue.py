@@ -57,9 +57,11 @@ class BoundingBox:
 if __name__ == '__main__':
 
     # The image size
-    img_width, img_height = map(int, input('Input the image resolution (WxH): ').split('x'))
-    
-    n = int(input('Input number of bboxes: '))
+    # img_width, img_height = map(int, input('Input the image resolution (WxH): ').split('x'))
+    img_width, img_height = 400, 600
+
+    # n = int(input('Input number of bboxes: '))
+    n = 7
     colors_set = {'red', 'blue', 'orange'}
 
     # Initialize the queues
@@ -69,46 +71,66 @@ if __name__ == '__main__':
 
     # The Crane coordinates
     print('Input the Crane bbox:', end=" ")
-    crane_box = list(map(int, input().split()))
+    # crane_box = list(map(int, input().split()))
+    crane_box = [200, 30, 40, 60]
     print('\nPlease input the coordinates of red, blue, orange boxes...\n')
 
-    i = 1
+    object_boxes = [
+        ['red', (100, 50, 30, 40)], ['blue', (175, 200, 60, 40)], ['orange', (278, 200, 120, 100)], ['red', (300, 500, 40, 50)],
+        ['blue', (320, 410, 80, 87)], ['orange', (240, 120, 100, 120)], ['red', (200, 100, 75, 60)]
+    ]
 
-    while True:
-        if i > n:
-            break
-        
-        # The color of the box
-        print('\nInput color:', end=' ')
-        c = input().strip()
-        if c not in colors_set:
-            print('Please enter valid color!')
-            continue
-        
-        try:
-            print(f'The object bbox {i}:', end=" ")
-            x, y, w, h = map(int, input().split())
-        except ValueError:
-            print('Please input correct coordinates!... \n')
-            continue
-        
-        if  0 > x > img_width or 0 > y > img_height or w > img_width or h > img_height:
-            print(f'You entered invalid coordinates, please enter correct value in range of ({img_width}, {img_height}!')
-            continue
-        
-        dist = euclid_distance(crane_box, [x, y, w, h])
+    for box in object_boxes:
+        color, offset = box[0], box[1]
+        dist = euclid_distance(crane_box, list(offset))
 
-        if c == 'red':
-            red_queue.put(BoundingBox(c, dist))
-        elif c == 'blue':
-            blue_queue.put(BoundingBox(c, dist))
-        elif c == 'orange':
-            orange_queue.put(BoundingBox(c, dist))
+        if color == 'red':
+            red_queue.put(BoundingBox(color, dist))
+        elif color == 'blue':
+            blue_queue.put(BoundingBox(color, dist))
+        elif color == 'orange':
+            orange_queue.put(BoundingBox(color, dist))
 
-        i += 1
+
+    # i = 1
+
+    # while True:
+    #     if i > n:
+    #         break
+        
+    #     # The color of the box
+    #     print('\nInput color:', end=' ')
+    #     c = input().strip()
+    #     if c not in colors_set:
+    #         print('Please enter valid color!')
+    #         continue
+        
+    #     try:
+    #         print(f'The object bbox {i}:', end=" ")
+    #         x, y, w, h = map(int, input().split())
+    #     except ValueError:
+    #         print('Please input correct coordinates!... \n')
+    #         continue
+        
+    #     if  0 > x > img_width or 0 > y > img_height or w > img_width or h > img_height:
+    #         print(f'You entered invalid coordinates, please enter correct value in range of ({img_width}, {img_height}!')
+    #         continue
+        
+        # dist = euclid_distance(crane_box, [x, y, w, h])
+
+        # if c == 'red':
+        #     red_queue.put(BoundingBox(c, dist))
+        # elif c == 'blue':
+        #     blue_queue.put(BoundingBox(c, dist))
+        # elif c == 'orange':
+        #     orange_queue.put(BoundingBox(c, dist))
+
+    #     i += 1
 
     print('Red queue:', len(red_queue.queue))
     print('Blue queue:', len(blue_queue.queue))
     print('Orange queue:', len(orange_queue.queue))
 
-    
+    for i in range(red_queue.qsize()):
+        print(red_queue.get().distance)
+
