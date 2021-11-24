@@ -5,7 +5,7 @@ from PIL import Image
 # load image 
 image = cv.imread('images/shapes.jpg')
 
-image = cv.GaussianBlur(image, ksize=(7, 7), sigmaX=1)
+# image = cv.GaussianBlur(image, ksize=(7, 7), sigmaX=1)
 
 gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
